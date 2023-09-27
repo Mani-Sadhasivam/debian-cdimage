@@ -10,3 +10,24 @@ panel-simple
 panel-edp
 pwm_bl
 pwm-cros-ec
+
+# For panel/backlight on Pinebook
+analogix-anx6345
+pwm-sun4i
+sun4i-drm
+sun8i-mixer
+
+# For panel/backlight on Pinebook Pro
+pwm-rockchip
+
+# For HDMI on some rockchip platforms (e.g. rock64-rk3328)
+phy-rockchip-inno-hdmi
+
+# For panel/backlight on MNT Reform 2
+ti-sn65dsi86
+
+# For panel/backlight on Thinkpad X13s
+msm
+gpu-sched
+dispcc-sc8280xp
+gpucc-sc8280xp

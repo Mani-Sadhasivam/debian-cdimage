@@ -8,3 +8,7 @@ extcon-usbc-cros-ec
 # For USB-C on Pinebook Pro
 tcpm
 typec
+
+# Thinkpad X13s
+phy-qcom-snps-femto-v2
+gpio-sbu-mux
