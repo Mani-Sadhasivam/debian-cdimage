@@ -8,7 +8,7 @@ mcopy -n -s -i efi.img '::/' tmp/
 cp tmp/efi/boot/bootaa64.efi tmp/efi/boot/grubaa64.efi
 cp ../../../../../../packaging/dtbloader/debian/boot/efi/EFI/debian/DtbLoader.efi tmp/efi/boot/bootaa64.efi
 
-LINUX_IMAGE="linux-image-6.2.0-rc1-custom"
+LINUX_IMAGE="linux-image-6.5.0-custom"
 DTB_DIR="tmp/dtb"
 mkdir -p $DTB_DIR
 python3 ../../../../../../packaging/dtbinstaller/debian/usr/local/bin/install-dtbs.py /usr/lib/$LINUX_IMAGE $DTB_DIR

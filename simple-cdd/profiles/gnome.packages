@@ -1,11 +1,10 @@
 gnome-core
 network-manager-gnome
-crda
 
 sudo
 vim
 
-linux-image-6.2.0-rc1-custom
+linux-image-6.5.0-custom
 grub-efi-arm64
 os-prober
 
@@ -21,4 +20,6 @@ linaro-overlay-sid
 
 firmware-lenovo
 ntfs-3g
-python2
+zstd
+wpasupplicant
+alsa-ucm-conf
