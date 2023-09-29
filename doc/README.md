@@ -20,15 +20,15 @@ It can be native or cross-compile build.  To get a faster build, we
 choose cross-compile build here.
 
 ```
-$ git clone https://git.linaro.org/people/manivannan.sadhasivam/linux.git
+$ git clone https://github.com/aarch64-laptops/linux.git
 $ cd linux/
-$ git checkout -b laptops-5.19-rc1 origin/lenovo-x13s
+$ git checkout -b lenovo-x13s-testing origin/lenovo-x13s
 $ export CROSS_COMPILE=aarch64-none-linux-gnu-
 $ make ARCH=arm64 laptop_defconfig
 $ make ARCH=arm64 LOCALVERSION="-custom" -j15 deb-pkg
 ```
 
-After the build completes, `linux-image-5.19.0-rc1-custom_5.19.0-rc1-custom-1_arm64.deb`
+After the build completes, `linux-image-6.5.0-custom_6.5.0-custom-1_arm64.deb`
 should be available in the parent directory.  It will be used by the
 following steps executed in Docker container.
 
@@ -52,9 +52,9 @@ $ sudo apt install kernel-wedge
 $ cd $HOME
 $ git clone https://github.com/Mani-Sadhasivam/debian-cdimage.git
 $ cd debian-cdimage
-$ git checkout -b laptops-5.19-rc1 origin/lenovo-x13s
-$ scp <build_machine_path>/linux-image-5.19.0-rc1-custom_5.19.0-rc1-custom-1_arm64.deb debian-cdimage/simple-cdd/localpackages/
-$ sudo dpkg -i debian-cdimage/simple-cdd/localpackages/linux-image-5.19.0-rc1-custom_5.19.0-rc1-custom-1_arm64.deb
+$ git checkout -b laptops-6.5.0 origin/lenovo-x13s-testing
+$ scp <build_machine_path>/linux-image-6.5.0-custom_6.5.0-custom-1_arm64.deb debian-cdimage/simple-cdd/localpackages/
+$ sudo dpkg -i debian-cdimage/simple-cdd/localpackages/linux-image-6.5.0-custom_6.5.0-custom-1_arm64.deb
 ```
 
 * Go to `linux-kernel-di-arm64` directory, which holds a debian source package.
@@ -84,12 +84,12 @@ The sources.list should have below entries:
 
 ```
 $ cat /etc/apt/sources.list
-deb http://deb.debian.org/debian bullseye main
-deb-src http://deb.debian.org/debian bullseye main
-deb http://security.debian.org/debian-security bullseye-security main
-deb-src http://security.debian.org/debian-security bullseye-security main
-deb http://deb.debian.org/debian bullseye-updates main
-deb-src http://deb.debian.org/debian bullseye-updates main
+deb http://deb.debian.org/debian bookworm main
+deb-src http://deb.debian.org/debian bookworm main
+deb http://security.debian.org/debian-security bookworm-security main
+deb-src http://security.debian.org/debian-security bookworm-security main
+deb http://deb.debian.org/debian bookworm-updates main
+deb-src http://deb.debian.org/debian bookworm-updates main
 
 $ sudo apt update
 ```
@@ -117,7 +117,7 @@ $ git am ../../../patches/debian-installer/grub-installer/0001-grub-installer-no
 $ sudo apt build-dep grub-installer
 $ dpkg-buildpackage -b
 $ cd ../
-$ cp grub-installer_1.183_arm64.udeb ../../simple-cdd/localpackages/
+$ cp grub-installer_1.198_arm64.udeb ../../simple-cdd/localpackages/
 ```
 
 * Prepare localudebs for debian-installer build.  The kernel module udebs
@@ -126,7 +126,7 @@ $ cp grub-installer_1.183_arm64.udeb ../../simple-cdd/localpackages/
 ```
 $ cd ../installer/build/
 $ cp ../../../kernel-wedge/*.udeb localudebs/
-$ echo "deb http://deb.debian.org/debian sid main/debian-installer" >> sources.list.udeb.local
+$ echo "deb http://deb.debian.org/debian bookworm main/debian-installer" >> sources.list.udeb.local
 $ echo "deb [trusted=yes] copy:$PWD localudebs/" >> sources.list.udeb.local
 ```
 
@@ -141,8 +141,8 @@ $ sed -i "s/EFI_SIGNED=y/#EFI_SIGNED=y/g" config/arm64.cfg
 * Build debian-installer.  The build result will be found in `dest` folder.
 
 ```
-$ make LINUX_KERNEL_ABI=5.19.0-rc1 build_cdrom_grub
-$ make LINUX_KERNEL_ABI=5.19.0-rc1 build_cdrom_gtk
+$ make LINUX_KERNEL_ABI=6.5.0 build_cdrom_grub
+$ make LINUX_KERNEL_ABI=6.5.0 build_cdrom_gtk
 ```
 
 ## Build CD Image
@@ -157,7 +157,7 @@ $ sudo apt install simple-cdd
 $ cd /usr/share/simple-cdd
 $ sudo patch -p1 < ~/debian-cdimage/patches/simple-cdd/0002-Update-default.preseed-for-aarch64-laptops-build.patch
 $ cd /usr/share/debian-cd
-$ sudo patch -p1 tools/boot/bullseye/boot-arm64 < ~/debian-cdimage/patches/simple-cdd/update-esp-partition.patch
+$ sudo patch -p1 tools/boot/bookworm/boot-arm64 < ~/debian-cdimage/patches/simple-cdd/update-esp-partition.patch
 ```
 
 * Copy installer.
@@ -191,6 +191,11 @@ $ cp ../kernel-wedge/*.udeb localpackages/
 ```
 $ echo "local_packages=\"$PWD/localpackages\"" >> profiles/gnome.conf
 $ echo "custom_installer=\"$PWD/debian/installer\"" >> profiles/gnome.conf
+```
+
+```
+$ mkdir tmp/mirror/dists/bookworm/main/dep11
+$ wget http://ftp.us.debian.org/debian/dists/bookworm/main/dep11/Components-arm64.yml.gz -C tmp/mirror/dists/bookworm/main/dep11/ 
 ```
 
 * Build CD image.  If everything goes fine, the result CD image should be
